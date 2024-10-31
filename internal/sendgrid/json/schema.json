@@ -1,0 +1,92 @@
+{
+  "type": "object",
+  "required": [
+    "personalizations",
+    "from"
+  ],
+  "if": {
+    "properties": {
+      "template_id": {
+        "const": null
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "content",
+      "subject"
+    ]
+  },
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "from": {
+      "type": "object",
+      "required": [
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        }
+      }
+    },
+    "personalizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "custom_args": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "subject": {
+      "type": "string"
+    },
+    "template_id": {
+      "type": "string",
+      "nullable": true
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true
+    },
+    "custom_args": {
+      "type": "object",
+      "nullable": true
+    }
+  }
+}
