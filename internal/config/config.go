@@ -13,16 +13,18 @@ const (
 )
 
 type Config struct {
-	ApiKey        string
-	Event         bool
-	EventEndpoint string
-	History       time.Duration
+	ApiKey         string
+	Event          bool
+	EventEndpoint  string
+	History        time.Duration
+	WebStaticFiles string
 }
 
-func (c *Config) Initialize(container *injector.Container) error {
+func (c *Config) Initialize(_ *injector.Container) error {
 	c.apiKey()
 	c.events()
 	c.history()
+	c.webStaticFiles()
 
 	return nil
 }
@@ -71,6 +73,16 @@ func (c *Config) history() {
 	c.History = defaultDuration
 
 	return
+}
+
+func (c *Config) webStaticFiles() {
+	static := os.Getenv("WEB_STATIC_FILES")
+
+	if static == "" {
+		static = "./web/"
+	}
+
+	c.WebStaticFiles = static
 }
 
 var _ injector.Injectable = (*Config)(nil)
