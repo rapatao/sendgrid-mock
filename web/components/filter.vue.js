@@ -54,10 +54,10 @@ export default {
         <div class="column is-one-fifth">
           <div class="field is-grouped">
             <div class="control">
-              <button class="button is-link" @click="filterFunc()">Filter</button>
+              <button class="button is-success" @click="filterFunc()">Filter</button>
             </div>
             <div class="control">
-              <button class="button is-warning" @click="clear()">Clear</button>
+              <button class="button is-info" @click="clear()">Clear</button>
             </div>
           </div>
         </div>
