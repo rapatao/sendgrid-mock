@@ -10,6 +10,8 @@ type Message struct {
 	From       Recipient
 	To         Recipient
 	Content    Content
+	CustomArgs CustomArgs
+	Categories Categories
 }
 
 type Recipient struct {
@@ -21,3 +23,7 @@ type Content struct {
 	Html *string
 	Text *string
 }
+
+type CustomArgs map[string]string
+
+type Categories []string

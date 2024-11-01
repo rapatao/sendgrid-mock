@@ -14,7 +14,7 @@ func (s *Service) Initialize(container *injector.Container) error {
 		return err
 	}
 
-	s.storage = &db
+	s.repo = &db
 
 	var cfg config.Config
 	err = container.Get(&cfg)

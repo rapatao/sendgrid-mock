@@ -7,5 +7,7 @@ insert into emails(event_id,
                    to_name,
                    to_address,
                    body_html,
-                   body_txt)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   body_txt,
+                   custom_args,
+                   categories)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)

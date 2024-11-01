@@ -2,25 +2,64 @@ package sendgrid
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"net/http"
+	"sendgrid-mock/internal/repository"
 	"time"
 )
 
-func (s *Service) send(events []map[string]any) {
+func (s *Service) triggerDeliveryEvent(ctx context.Context, message repository.Message, err error) {
 	if !s.config.Event {
 		return
 	}
 
-	body, err := json.Marshal(events)
+	event := map[string]any{}
+
+	for key, value := range message.CustomArgs {
+		event[key] = value
+	}
+
+	var (
+		eventName   string
+		eventReason string
+	)
+
+	if err == nil {
+		eventName = "delivered"
+		eventReason = "stored"
+	} else {
+		eventName = "dropped"
+		eventReason = err.Error()
+	}
+
+	event["email"] = message.To.Address
+	event["timestamp"] = time.Now().Unix()
+	event["event"] = eventName
+	event["reason"] = "mock service: " + eventReason
+	event["sg_event_id"] = message.EventID
+	event["sg_message_id"] = message.MessageID
+	event["smtp-id"] = message.EventID + "." + message.MessageID + "@mock"
+	event["category"] = categories
+
+	s.sendEvent(ctx, event)
+}
+
+func (s *Service) sendEvent(ctx context.Context, event map[string]any) {
+	if !s.config.Event {
+		return
+	}
+
+	body, err := json.Marshal([]map[string]any{event})
 	if err != nil {
 		log.Error().Err(err).Msg("failed to marshal events")
 
 		return
 	}
 
-	request, err := http.NewRequest(
+	request, err := http.NewRequestWithContext(
+		ctx,
 		http.MethodPost,
 		s.config.EventEndpoint,
 		bytes.NewReader(body))
@@ -42,46 +81,6 @@ func (s *Service) send(events []map[string]any) {
 	defer result.Body.Close()
 
 	log.Info().Int("status_code", result.StatusCode).Msg("webhook response")
-}
-
-func generateEvent(
-	err error,
-	email string,
-	eventID string,
-	messageID string,
-	eventTimestamp time.Time,
-	categories []string,
-	customArgs map[string]string,
-) map[string]any {
-	event := map[string]any{}
-
-	for key, value := range customArgs {
-		event[key] = value
-	}
-
-	var (
-		eventName   string
-		eventReason string
-	)
-
-	if err == nil {
-		eventName = "delivered"
-		eventReason = "stored"
-	} else {
-		eventName = "dropped"
-		eventReason = err.Error()
-	}
-
-	event["email"] = email
-	event["timestamp"] = eventTimestamp.Unix()
-	event["event"] = eventName
-	event["reason"] = "mock service: " + eventReason
-	event["sg_event_id"] = eventID
-	event["sg_message_id"] = messageID
-	event["smtp-id"] = eventID + "." + messageID + "@mock"
-	event["category"] = categories
-
-	return event
 }
 
 func categories(values ...[]string) []string {

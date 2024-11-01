@@ -1,8 +1,11 @@
 package sendgrid
 
 import (
+	_ "embed"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/rapatao/go-injector"
+	"github.com/xeipuuv/gojsonschema"
 	"io"
 	"net/http"
 	"sendgrid-mock/internal/config"
@@ -10,9 +13,16 @@ import (
 	"sendgrid-mock/internal/rest/restrouters"
 )
 
+var (
+	//go:embed json/schema.json
+	schema string
+
+	definition = gojsonschema.NewStringLoader(schema)
+)
+
 type Service struct {
-	config  *config.Config
-	storage *repository.Service
+	config *config.Config
+	repo   *repository.Service
 }
 
 func (s *Service) Routes() []restrouters.Route {
@@ -70,7 +80,7 @@ func (s *Service) HandleSend(context *gin.Context) {
 		return
 	}
 
-	id, err := s.persist(context.Request.Context(), s.storage, bytes)
+	id, err := s.persist(context.Request.Context(), bytes)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError,
 			gin.H{"errors": []gin.H{
@@ -87,6 +97,21 @@ func (s *Service) HandleSend(context *gin.Context) {
 	context.Header("X-Message-Id", id)
 	context.Header("Content-Type", "application/json")
 	context.JSON(http.StatusAccepted, gin.H{})
+}
+
+func validate(body []byte) error {
+	current := gojsonschema.NewBytesLoader(body)
+
+	result, err := gojsonschema.Validate(definition, current)
+	if err != nil {
+		return err
+	}
+
+	if !result.Valid() {
+		return errors.New("invalid JSON")
+	}
+
+	return nil
 }
 
 var (

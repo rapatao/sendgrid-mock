@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
+	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rapatao/go-injector"
 	"github.com/rs/zerolog/log"
@@ -14,11 +15,13 @@ const (
 	db = "datastore.sqlite"
 )
 
-//go:embed sql/schema.sql
-var schema string
+var (
+	//go:embed sql/schema.sql
+	schema string
 
-//go:embed sql/insert.sql
-var insertSQL string
+	//go:embed sql/insert.sql
+	insertSQL string
+)
 
 type Service struct {
 	config  config.Config
@@ -27,7 +30,17 @@ type Service struct {
 }
 
 func (s *Service) Save(ctx context.Context, message Message) error {
-	_, err := s.conn.ExecContext(ctx, insertSQL,
+	customArgs, err := json.Marshal(message.CustomArgs)
+	if err != nil {
+		return err
+	}
+
+	categories, err := json.Marshal(message.Categories)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.conn.ExecContext(ctx, insertSQL,
 		message.EventID,
 		message.MessageID,
 		message.ReceivedAt,
@@ -38,6 +51,8 @@ func (s *Service) Save(ctx context.Context, message Message) error {
 		message.To.Address,
 		message.Content.Html,
 		message.Content.Text,
+		customArgs,
+		categories,
 	)
 
 	return err
