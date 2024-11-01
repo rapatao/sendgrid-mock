@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/rapatao/go-injector"
-	"sendgrid-mock/internal/rest"
+	"sendgrid-mock/internal/web"
 )
 
 func main() {
 	container := injector.Create()
 
 	var (
-		ctrl rest.Controller
+		ctrl web.Controller
 	)
 
 	err := container.Get(&ctrl)

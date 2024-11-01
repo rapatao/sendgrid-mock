@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/repository"
-	"sendgrid-mock/internal/rest/restrouters"
+	"sendgrid-mock/internal/web/restrouters"
 )
 
 var (

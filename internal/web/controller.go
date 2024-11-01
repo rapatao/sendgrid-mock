@@ -1,4 +1,4 @@
-package rest
+package web
 
 import (
 	"github.com/gin-contrib/cors"
@@ -7,8 +7,8 @@ import (
 	"github.com/rapatao/go-injector"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"sendgrid-mock/internal/rest/restrouters"
 	"sendgrid-mock/internal/sendgrid"
+	"sendgrid-mock/internal/web/restrouters"
 )
 
 type Controller struct {
@@ -54,7 +54,7 @@ func (c *Controller) registerControllers(controllers ...restrouters.Router) {
 	for _, controller := range controllers {
 		for _, route := range controller.Routes() {
 			log.Info().
-				Str("rest", "service").
+				Str("web", "service").
 				Msgf("registering %s %s", route.Method, route.Path)
 
 			c.engine.Handle(route.Method, route.Path, route.Handler)
