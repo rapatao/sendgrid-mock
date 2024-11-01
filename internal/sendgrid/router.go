@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/rapatao/go-injector"
 	"github.com/xeipuuv/gojsonschema"
 	"io"
 	"net/http"
@@ -21,8 +20,9 @@ var (
 )
 
 type Service struct {
-	config *config.Config
-	repo   *repository.Service
+	config  *config.Config
+	repo    *repository.Service
+	cleaner chan bool
 }
 
 func (s *Service) Routes() []restrouters.Route {
@@ -115,6 +115,5 @@ func validate(body []byte) error {
 }
 
 var (
-	_ injector.Injectable = (*Service)(nil)
-	_ restrouters.Router  = (*Service)(nil)
+	_ restrouters.Router = (*Service)(nil)
 )

@@ -6,8 +6,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/rapatao/go-injector"
-	"github.com/rs/zerolog/log"
 	"sendgrid-mock/internal/config"
 )
 
@@ -24,9 +22,8 @@ var (
 )
 
 type Service struct {
-	config  config.Config
-	conn    *sql.DB
-	cleanup chan bool
+	config config.Config
+	conn   *sql.DB
 }
 
 func (s *Service) Save(ctx context.Context, message Message) error {
@@ -57,13 +54,3 @@ func (s *Service) Save(ctx context.Context, message Message) error {
 
 	return err
 }
-
-func (s *Service) TriggerCleanup() {
-	select {
-	case s.cleanup <- true:
-	default:
-		log.Info().Msg("skipping cleanup since other process is running")
-	}
-}
-
-var _ injector.Injectable = (*Service)(nil)

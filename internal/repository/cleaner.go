@@ -11,27 +11,20 @@ var (
 	cleanupSQL string
 )
 
-func (s *Service) cleaner() {
-	for range s.cleanup {
-
-		threshold := time.Now().Add(-s.config.History)
-
-		exec, err := s.conn.Exec(cleanupSQL, threshold)
-		if err != nil {
-			log.Error().Err(err).Msg("cleanup query is failing")
-
-			continue
-		}
-
-		affected, err := exec.RowsAffected()
-		if err != nil {
-			log.Error().Err(err).Msg("unable to retrieve affected rows")
-
-			continue
-		}
-
-		log.Info().Int64("rows", affected).Msg("cleanup succeeded")
+func (s *Service) Cleanup(threshold time.Time) error {
+	exec, err := s.conn.Exec(cleanupSQL, threshold)
+	if err != nil {
+		return err
 	}
 
-	panic("cleanup should never stop")
+	affected, err := exec.RowsAffected()
+	if err != nil {
+		log.Debug().Err(err).Msg("unable to retrieve affected rows")
+
+		return nil
+	}
+
+	log.Debug().Int64("rows", affected).Msg("cleanup succeeded")
+
+	return nil
 }

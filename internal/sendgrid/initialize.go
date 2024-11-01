@@ -24,5 +24,10 @@ func (s *Service) Initialize(container *injector.Container) error {
 
 	s.config = &cfg
 
+	s.cleaner = make(chan bool, 1)
+	go s.startCleaner()
+
 	return nil
 }
+
+var _ injector.Injectable = (*Service)(nil)
