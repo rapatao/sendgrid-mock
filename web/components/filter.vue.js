@@ -5,15 +5,19 @@ export default {
     state: Object,
     filterFunc: Function,
   },
-  setup() {
-    return {
-      clear: ref(function () {
-        this.state.to = null
-        this.state.subject = null
+  methods: {
+    clear() {
+      this.state.to = ""
+      this.state.subject = ""
+      this.state.page = 0
 
-        this.filterFunc()
-      }),
-    }
+      this.filterFunc()
+    },
+    filter() {
+      this.state.page = 0
+      
+      this.filterFunc()
+    },
   },
   template: `
     <div class="container">
@@ -54,7 +58,7 @@ export default {
         <div class="column is-one-fifth">
           <div class="field is-grouped">
             <div class="control">
-              <button class="button is-success" @click="filterFunc()">Filter</button>
+              <button class="button is-success" @click="filter()">Filter</button>
             </div>
             <div class="control">
               <button class="button is-info" @click="clear()">Clear</button>

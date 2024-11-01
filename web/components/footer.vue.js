@@ -5,7 +5,7 @@ export default {
   template: `
     <footer class="footer">
       <div class="content has-text-centered">
-        <p>Search contains <strong>{{ state.total }}</strong> message(s).</p>
+        <p><strong>Showing {{ state.messages.length }} of {{ state.total }}</strong> message(s).</p>
       </div>
     </footer>
   `

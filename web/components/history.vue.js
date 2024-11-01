@@ -2,6 +2,17 @@ export default {
   props: {
     state: Object,
     deleteEventFunc: Function,
+    filterFunc: Function,
+  },
+  methods: {
+    previous() {
+      this.state.page -= 1
+      this.filterFunc()
+    },
+    next() {
+      this.state.page += 1
+      this.filterFunc()
+    },
   },
   template: `
     <section class="section">
@@ -20,19 +31,19 @@ export default {
           <tbody>
           <tr v-for="message in state.messages">
             <td>
-              {{ message.received_at }}
+              {{ new Date(message.received_at).toLocaleString() }}
             </td>
 
             <td>
-              <strong>{{ message.from_name }}</strong>
+              <strong>{{ message.from.name }}</strong>
               <br/>
-              <small>{{ message.from_address }}</small>
+              <small>{{ message.from.address }}</small>
             </td>
 
             <td>
-              <strong>{{ message.to_name }}</strong>
+              <strong>{{ message.to.name }}</strong>
               <br/>
-              <small>{{ message.to_address }}</small>
+              <small>{{ message.to.address }}</small>
             </td>
 
             <td>{{ message.subject }}</td>
@@ -59,8 +70,10 @@ export default {
         </table>
 
         <nav class="pagination" role="navigation" aria-label="pagination">
-          <a href="#" class="pagination-previous is-disabled">Previous</a>
-          <a href="#" class="pagination-next is-disabled">Next page</a>
+          <a href="#" class="pagination-previous" :class="{ 'is-disabled': state.page <= 0}" @click="previous()">Previous</a>
+          <a href="#" class="pagination-next"
+             :class="{ 'is-disabled': (state.total - ((1 + state.page) * state.maxRows)) < 1 }"
+             @click="next()">Next page</a>
         </nav>
       </div>
     </section>

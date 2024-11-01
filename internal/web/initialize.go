@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/config"
+	"sendgrid-mock/internal/manager"
 	"sendgrid-mock/internal/sendgrid"
 	"sendgrid-mock/internal/web/restrouters"
 )
@@ -12,6 +13,7 @@ func (c *Controller) Initialize(container *injector.Container) error {
 	var (
 		healthRouter   restrouters.HealthRouter
 		sendgridRouter sendgrid.Service
+		managerRouter  manager.Service
 		cfg            config.Config
 	)
 
@@ -30,6 +32,11 @@ func (c *Controller) Initialize(container *injector.Container) error {
 		return err
 	}
 
+	err = container.Get(&managerRouter)
+	if err != nil {
+		return err
+	}
+
 	gin.SetMode(gin.ReleaseMode)
 
 	c.config = &cfg
@@ -41,7 +48,7 @@ func (c *Controller) Initialize(container *injector.Container) error {
 		c.configureCORS(),
 	)
 
-	c.registerControllers(&healthRouter, &sendgridRouter)
+	c.registerControllers(&healthRouter, &sendgridRouter, &managerRouter)
 
 	return nil
 }

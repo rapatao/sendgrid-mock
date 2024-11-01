@@ -3,25 +3,25 @@ package repository
 import "time"
 
 type Message struct {
-	EventID    string
-	MessageID  string
-	ReceivedAt time.Time
-	Subject    string
-	From       Recipient
-	To         Recipient
-	Content    Content
-	CustomArgs CustomArgs
-	Categories Categories
+	EventID    string     `json:"event_id"`
+	MessageID  string     `json:"message_id"`
+	ReceivedAt time.Time  `json:"received_at"`
+	Subject    string     `json:"subject"`
+	From       Recipient  `json:"from"`
+	To         Recipient  `json:"to"`
+	Content    Content    `json:"content"`
+	CustomArgs CustomArgs `json:"custom_args"`
+	Categories Categories `json:"categories"`
 }
 
 type Recipient struct {
-	Name    string
-	Address string
+	Name    string `json:"name"`
+	Address string `json:"address"`
 }
 
 type Content struct {
-	Html *string
-	Text *string
+	Html *string `json:"html"`
+	Text *string `json:"text"`
 }
 
 type CustomArgs map[string]string
