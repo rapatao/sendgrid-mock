@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"sendgrid-mock/internal/web/restrouters"
-	"strconv"
 )
 
 func (s *Service) Routes() []restrouters.Route {
@@ -31,29 +30,6 @@ func (s *Service) handleSearch(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, search)
-}
-
-func strOrNil(context *gin.Context, param string) *string {
-	value, set := context.GetQuery(param)
-	if !set || value == "" {
-		return nil
-	}
-
-	return &value
-}
-
-func intOrDefault(context *gin.Context, param string, def int) int {
-	str, set := context.GetQuery(param)
-	if !set || str == "" {
-		return def
-	}
-
-	value, err := strconv.Atoi(str)
-	if err != nil {
-		return def
-	}
-
-	return value
 }
 
 var _ restrouters.Router = (*Service)(nil)

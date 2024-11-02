@@ -8,7 +8,7 @@ import (
 	"errors"
 	"github.com/oklog/ulid/v2"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-	"sendgrid-mock/internal/repository"
+	"sendgrid-mock/internal/model"
 	"time"
 )
 
@@ -40,20 +40,20 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 
 	for _, personalization := range message.Personalizations {
 		for _, email := range personalization.To {
-			message := repository.Message{
+			message := model.Message{
 				EventID:    ulid.Make().String(),
 				MessageID:  messageID,
 				ReceivedAt: time.Now(),
 				Subject:    message.Subject,
-				From: repository.Recipient{
+				From: model.Recipient{
 					Name:    message.From.Name,
 					Address: message.From.Address,
 				},
-				To: repository.Recipient{
+				To: model.Recipient{
 					Name:    email.Name,
 					Address: email.Address,
 				},
-				Content: repository.Content{
+				Content: model.Content{
 					Html: html,
 					Text: text,
 				},

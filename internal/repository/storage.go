@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
 	"sendgrid-mock/internal/config"
+	"sendgrid-mock/internal/model"
 )
 
 const (
@@ -26,7 +27,7 @@ type Service struct {
 	conn   *sql.DB
 }
 
-func (s *Service) Save(ctx context.Context, message Message) error {
+func (s *Service) Save(ctx context.Context, message model.Message) error {
 	customArgs, err := json.Marshal(message.CustomArgs)
 	if err != nil {
 		return err

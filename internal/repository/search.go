@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"sendgrid-mock/internal/model"
 )
 
 var (
@@ -15,9 +16,9 @@ var (
 )
 
 type SearchResult struct {
-	Messages []Message `json:"messages"`
-	Total    int       `json:"total"`
-	Page     int       `json:"page"`
+	Messages []model.Message `json:"messages"`
+	Total    int             `json:"total"`
+	Page     int             `json:"page"`
 }
 
 func (s *Service) Search(ctx context.Context, to *string, subject *string, page int, rows int) (*SearchResult, error) {
@@ -63,8 +64,8 @@ func (s *Service) countSearchMessages(ctx context.Context, to *string, subject *
 }
 
 func (s *Service) searchMessages(
-	ctx context.Context, to *string, subject *string, page int, rows int) ([]Message, error) {
-	messages := make([]Message, 0)
+	ctx context.Context, to *string, subject *string, page int, rows int) ([]model.Message, error) {
+	messages := make([]model.Message, 0)
 
 	queryContext, err := s.conn.QueryContext(ctx, searchSQL, to, subject, page, rows, rows)
 	if err != nil {
@@ -75,7 +76,7 @@ func (s *Service) searchMessages(
 
 	for queryContext.Next() {
 		var (
-			message    Message
+			message    model.Message
 			customArgs string
 			categories string
 		)

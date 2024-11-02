@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"net/http"
-	"sendgrid-mock/internal/repository"
+	"sendgrid-mock/internal/model"
 	"time"
 )
 
-func (s *Service) triggerDeliveryEvent(ctx context.Context, message repository.Message, err error) {
+func (s *Service) triggerDeliveryEvent(ctx context.Context, message model.Message, err error) {
 	if !s.config.Event {
 		return
 	}
