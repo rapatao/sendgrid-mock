@@ -13,6 +13,13 @@ RUN make deps build
 FROM alpine:3.20
 
 COPY --from=builder /build/app /opt/sendgrid-mock
+COPY --from=builder /build/web /opt/web
+
+ENV API_KEY=""
+ENV EVENT_DELIVERY_URL=""
+ENV MAIL_HISTORY_DURATION=""
+ENV WEB_STATIC_FILES="/opt/web"
+ENV STORAGE_DIR="/tmp/"
 
 EXPOSE 3000
 

@@ -12,3 +12,6 @@ build:
 
 docker-build:
 	docker build -t sendgrid-mock:develop .
+
+docker-run:
+	docker run -p 3000:3000 --rm sendgrid-mock:develop
