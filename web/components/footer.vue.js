@@ -25,9 +25,18 @@ export default {
       <div class="content has-text-centered">
         <p>{{ footer(state) }}</p>
       </div>
-      <div class="content has-text-right">
-        <a @click="deleteAllFunc">delete all</a>
+      <div class="columns">
+        <div class="column has-text-left">
+          <a href="https://github.com/rapatao/sendgrid-mock" target="_blank">
+            <span class="icon"><span class="has-text-success"><i class="fab fa-lg fa-github"></i></span></span>
+          </a>
+        </div>
+
+        <div class="column has-text-right">
+          <a @click="deleteAllFunc">Delete all messages</a>
+        </div>
       </div>
+
     </footer>
   `
 }
