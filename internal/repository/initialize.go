@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"github.com/rapatao/go-injector"
-	"os"
 	"sendgrid-mock/internal/config"
 )
 
@@ -16,17 +15,7 @@ func (s *Service) Initialize(container *injector.Container) error {
 
 	s.config = cfg
 
-	file, err := os.Create(cfg.StorageDig + db)
-	if err != nil {
-		return err
-	}
-
-	err = file.Close()
-	if err != nil {
-		return err
-	}
-
-	dbConn, err := sql.Open("sqlite3", db)
+	dbConn, err := sql.Open("sqlite3", cfg.StorageFile)
 	if err != nil {
 		return err
 	}

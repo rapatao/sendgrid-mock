@@ -18,7 +18,7 @@ type Config struct {
 	EventEndpoint  string
 	History        time.Duration
 	WebStaticFiles string
-	StorageDig     string
+	StorageFile    string
 }
 
 func (c *Config) Initialize(_ *injector.Container) error {
@@ -26,6 +26,7 @@ func (c *Config) Initialize(_ *injector.Container) error {
 	c.events()
 	c.history()
 	c.webStaticFiles()
+	c.storageDir()
 
 	return nil
 }
@@ -87,12 +88,19 @@ func (c *Config) webStaticFiles() {
 }
 
 func (c *Config) storageDir() {
-	storage := os.Getenv("STORAGE_DIR")
+	storage := os.Getenv("STORAGE_FILE")
 	if storage == "" {
-		storage = "./"
+		file, err := os.CreateTemp(os.TempDir(), "sendgrid-mock.")
+		if err != nil {
+			log.Fatal().Err(err).Msgf("failed to create temp file")
+		}
+
+		storage = file.Name()
 	}
 
-	c.StorageDig = storage
+	log.Info().Msgf("using %s to store messages", storage)
+
+	c.StorageFile = storage
 }
 
 var _ injector.Injectable = (*Config)(nil)
