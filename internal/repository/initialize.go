@@ -8,7 +8,15 @@ import (
 )
 
 func (s *Service) Initialize(container *injector.Container) error {
-	file, err := os.Create(db)
+	var cfg config.Config
+	err := container.Get(&cfg)
+	if err != nil {
+		return err
+	}
+
+	s.config = cfg
+
+	file, err := os.Create(cfg.StorageDig + db)
 	if err != nil {
 		return err
 	}
@@ -30,14 +38,6 @@ func (s *Service) Initialize(container *injector.Container) error {
 
 		return err
 	}
-
-	var cfg config.Config
-	err = container.Get(&cfg)
-	if err != nil {
-		return err
-	}
-
-	s.config = cfg
 
 	return nil
 }

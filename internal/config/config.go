@@ -18,6 +18,7 @@ type Config struct {
 	EventEndpoint  string
 	History        time.Duration
 	WebStaticFiles string
+	StorageDig     string
 }
 
 func (c *Config) Initialize(_ *injector.Container) error {
@@ -83,6 +84,15 @@ func (c *Config) webStaticFiles() {
 	}
 
 	c.WebStaticFiles = static
+}
+
+func (c *Config) storageDir() {
+	storage := os.Getenv("STORAGE_DIR")
+	if storage == "" {
+		storage = "./"
+	}
+
+	c.StorageDig = storage
 }
 
 var _ injector.Injectable = (*Config)(nil)
