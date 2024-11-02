@@ -1,1 +1,9 @@
 GET http://localhost:3000/messages/
+
+###
+
+DELETE http://localhost:3000/messages/123
+
+### 
+
+DELETE http://localhost:3000/messages

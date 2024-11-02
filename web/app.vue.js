@@ -18,8 +18,12 @@ export default {
     }
   },
   methods: {
-    deleteEvent(id) {
-      console.log("deleting event id:", id)
+    scrollTop() {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
     },
     filter() {
       fetch(
@@ -36,9 +40,23 @@ export default {
         .then(json => {
           this.state.messages = json.messages
           this.state.total = json.total
+          
+          this.scrollTop()
         })
         .catch(err => console.error(err))
     },
+    deleteEvent(id) {
+      fetch("/messages/" + id, {
+        method: "DELETE",
+      }).then(_ => this.filter())
+        .catch(err => console.error(err))
+    },
+    deleteAll() {
+      fetch("/messages", {
+        method: "DELETE",
+      }).then(_ => this.filter())
+        .catch(err => console.error(err))
+    }
   },
   beforeMount() {
     this.filter()
@@ -47,9 +65,8 @@ export default {
   template: `
     <section class="section">
       <Filter :state="state" :filter-func="filter"/>
-      <History :state="state" :filter-func="filter" :delete-event-func="deleteEvent"/>
-      <Footer :state="state"/>
-
+      <History :state="state" :filter-func="filter" :delete-func="deleteEvent"/>
+      <Footer :state="state" :delete-all-func="deleteAll"/>
     </section>
   `
 }

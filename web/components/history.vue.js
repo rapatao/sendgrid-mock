@@ -1,8 +1,8 @@
 export default {
   props: {
     state: Object,
-    deleteEventFunc: Function,
     filterFunc: Function,
+    deleteFunc: Function,
   },
   methods: {
     hasPrevious(state) {
@@ -14,19 +14,10 @@ export default {
 
       return remainingMessages > 0
     },
-    scrollTop() {
-      window.scroll({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      })
-    },
     previous() {
       if (this.hasPrevious(this.state)) {
         this.state.page -= 1
         this.filterFunc()
-
-        this.scrollTop()
       }
     },
     next() {
@@ -83,7 +74,7 @@ export default {
                   <i class="fas fa-lg fa-file-alt"></i>
                 </span>
             </span>
-              <span class="icon" @click="deleteEventFunc(message.event_id)">
+              <span class="icon" @click="deleteFunc(message.event_id)">
               <span class="has-text-danger">
                 <i class="fas fa-lg fa-trash"></i>
               </span>

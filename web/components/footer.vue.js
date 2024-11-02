@@ -1,6 +1,7 @@
 export default {
   props: {
     state: Object,
+    deleteAllFunc: Function,
   },
   methods: {
     footer(state) {
@@ -23,6 +24,9 @@ export default {
     <footer class="footer">
       <div class="content has-text-centered">
         <p>{{ footer(state) }}</p>
+      </div>
+      <div class="content has-text-right">
+        <a @click="deleteAllFunc">delete all</a>
       </div>
     </footer>
   `

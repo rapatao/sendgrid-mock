@@ -13,6 +13,16 @@ func (s *Service) Routes() []restrouters.Route {
 			Path:    "/messages",
 			Handler: s.handleSearch,
 		},
+		{
+			Method:  http.MethodDelete,
+			Path:    "/messages/:event_id",
+			Handler: s.handleDelete,
+		},
+		{
+			Method:  http.MethodDelete,
+			Path:    "/messages",
+			Handler: s.handleDeleteAll,
+		},
 	}
 }
 
@@ -30,6 +40,33 @@ func (s *Service) handleSearch(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, search)
+}
+
+func (s *Service) handleDelete(context *gin.Context) {
+	eventID := context.Param("event_id")
+	if eventID == "" {
+		context.AbortWithStatus(http.StatusBadRequest)
+
+		return
+	}
+
+	err := s.repo.Delete(context.Request.Context(), eventID)
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+	}
+
+	context.Status(http.StatusNoContent)
+}
+
+func (s *Service) handleDeleteAll(context *gin.Context) {
+	err := s.repo.DeleteAll(context.Request.Context())
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+
+		return
+	}
+
+	context.Status(http.StatusNoContent)
 }
 
 var _ restrouters.Router = (*Service)(nil)
