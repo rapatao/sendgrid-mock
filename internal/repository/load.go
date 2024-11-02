@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"sendgrid-mock/internal/model"
 )
 
@@ -14,6 +16,7 @@ var (
 
 func (s *Service) Get(ctx context.Context, eventID string) (*model.Message, error) {
 	row := s.conn.QueryRowContext(ctx, selectByIDSQL, eventID)
+
 	if row.Err() != nil {
 		return nil, row.Err()
 	}
@@ -40,6 +43,10 @@ func (s *Service) Get(ctx context.Context, eventID string) (*model.Message, erro
 	)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 
