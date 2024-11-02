@@ -1,5 +1,7 @@
 # SendGrid Mock
 
+![GitHub Release](https://img.shields.io/github/v/release/rapatao/sendgrid-mock)
+
 Provides a service that simulates the sending mail endpoint provided by SendGrid API that may only be used for
 development purposes.
 
