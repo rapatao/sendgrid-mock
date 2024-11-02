@@ -42,6 +42,12 @@ There are some customization possibles, all of them are defined by using the sys
 * **MAIL_HISTORY_DURATION**: duration, using Golang pattern, which is used to delete messages older than that duration;
 * **STORAGE_FILE**: when defined, instead of creating a randomized temporary file, the given file name will be used;
 
+## Container (Docker)
+
+```shell
+docker run -p 3000:3000 --rm ghcr.io/rapatao/sendgrid-mock:${version:-latest}
+```
+
 ## Notes
 
 This service/repository should not be used as a studying reference since it isn't using any good development practice,
