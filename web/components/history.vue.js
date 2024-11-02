@@ -5,13 +5,37 @@ export default {
     filterFunc: Function,
   },
   methods: {
+    hasPrevious(state) {
+      return state.page > 0
+    },
+    hasNext(state) {
+      let startMessages = (1 + state.page) * state.maxRows
+      let remainingMessages = state.total - startMessages
+
+      return remainingMessages > 0
+    },
+    scrollTop() {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
+    },
     previous() {
-      this.state.page -= 1
-      this.filterFunc()
+      if (this.hasPrevious(this.state)) {
+        this.state.page -= 1
+        this.filterFunc()
+
+        this.scrollTop()
+      }
     },
     next() {
-      this.state.page += 1
-      this.filterFunc()
+      if (this.hasNext(this.state)) {
+        this.state.page += 1
+        this.filterFunc()
+
+        this.scrollTop()
+      }
     },
   },
   template: `
@@ -70,10 +94,11 @@ export default {
         </table>
 
         <nav class="pagination" role="navigation" aria-label="pagination">
-          <a href="#" class="pagination-previous" :class="{ 'is-disabled': state.page <= 0}" @click="previous()">Previous</a>
-          <a href="#" class="pagination-next"
-             :class="{ 'is-disabled': (state.total - ((1 + state.page) * state.maxRows)) < 1 }"
-             @click="next()">Next page</a>
+          <a class="pagination-previous"
+             :class="{ 'is-disabled': !hasPrevious(state) }" @click="previous">Previous</a>
+          <a class="pagination-next"
+             :class="{ 'is-disabled': !hasNext(state) }"
+             @click="next">Next page</a>
         </nav>
       </div>
     </section>

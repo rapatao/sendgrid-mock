@@ -1,21 +1,27 @@
-const {ref} = Vue
-
 export default {
   props: {
     state: Object,
     filterFunc: Function,
   },
+  data() {
+    return {
+      params: {
+        to: "",
+        subject: "",
+      }
+    }
+  },
   methods: {
     clear() {
-      this.state.to = ""
-      this.state.subject = ""
-      this.state.page = 0
-
-      this.filterFunc()
+      this.params.to = ""
+      this.params.subject = ""
+      this.filter()
     },
     filter() {
       this.state.page = 0
-      
+      this.state.to = this.params.to
+      this.state.subject = this.params.subject
+
       this.filterFunc()
     },
   },
@@ -32,7 +38,7 @@ export default {
               <div class="field">
                 <p class="control">
                   <input id="to" class="input is-normal" type="email" placeholder="example@example.com"
-                         v-model="state.to"/>
+                         v-model="params.to" v-on:keyup.enter="filter"/>
                 </p>
               </div>
             </div>
@@ -48,7 +54,7 @@ export default {
               <div class="field">
                 <p class="control">
                   <input id="subject" class="input is-normal" type="text" placeholder="Subject"
-                         v-model="state.subject"/>
+                         v-model="params.subject" v-on:keyup.enter="filter"/>
                 </p>
               </div>
             </div>
@@ -58,10 +64,10 @@ export default {
         <div class="column is-one-fifth">
           <div class="field is-grouped">
             <div class="control">
-              <button class="button is-success" @click="filter()">Filter</button>
+              <button class="button is-success" @click="filter">Filter</button>
             </div>
             <div class="control">
-              <button class="button is-info" @click="clear()">Clear</button>
+              <button class="button is-info" @click="clear">Clear</button>
             </div>
           </div>
         </div>

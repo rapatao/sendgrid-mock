@@ -2,8 +2,6 @@ import Filter from './components/filter.vue.js'
 import History from './components/history.vue.js'
 import Footer from './components/footer.vue.js'
 
-const {ref} = Vue
-
 class SearchState {
   to = ""
   subject = ""
@@ -24,8 +22,6 @@ export default {
       console.log("deleting event id:", id)
     },
     filter() {
-      console.log("Filter using ", this.state.to, " and ", this.state.subject)
-
       fetch(
         "/messages?" + new URLSearchParams(
           {
@@ -43,6 +39,9 @@ export default {
         })
         .catch(err => console.error(err))
     },
+  },
+  beforeMount() {
+    this.filter()
   },
   components: {Filter, History, Footer},
   template: `
