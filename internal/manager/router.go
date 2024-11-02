@@ -23,6 +23,11 @@ func (s *Service) Routes() []restrouters.Route {
 			Path:    "/messages",
 			Handler: s.handleDeleteAll,
 		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/messages/:event_id",
+			Handler: s.handleGet,
+		},
 	}
 }
 
@@ -67,6 +72,63 @@ func (s *Service) handleDeleteAll(context *gin.Context) {
 	}
 
 	context.Status(http.StatusNoContent)
+}
+
+func (s *Service) handleGet(context *gin.Context) {
+	eventID := context.Param("event_id")
+	if eventID == "" {
+		context.AbortWithStatus(http.StatusBadRequest)
+
+		return
+	}
+
+	format := strOrNil(context, "format")
+	if format == nil {
+		context.AbortWithStatus(http.StatusBadRequest)
+
+		return
+	}
+
+	message, err := s.repo.Get(context.Request.Context(), eventID)
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+
+		return
+	}
+
+	if message == nil {
+		context.AbortWithStatus(http.StatusNotFound)
+
+		return
+	}
+
+	var (
+		content *string
+		mime    string
+	)
+	switch *format {
+	case "html":
+		content = message.Content.Html
+		mime = "text/html"
+	case "text":
+		content = message.Content.Text
+		mime = "text/plain"
+	default:
+		context.AbortWithStatus(http.StatusBadRequest)
+
+		return
+	}
+
+	if content == nil {
+		context.AbortWithStatus(http.StatusNotFound)
+
+		return
+	}
+
+	// TODO trigger open event
+
+	context.Header("Content-Type", mime)
+	context.String(http.StatusOK, *content)
 }
 
 var _ restrouters.Router = (*Service)(nil)

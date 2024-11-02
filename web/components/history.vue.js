@@ -28,7 +28,16 @@ export default {
         this.scrollTop()
       }
     },
-  },
+    open(id, format) {
+      window.open('/messages/' + id + '?' + new URLSearchParams({
+        "format": format
+      }))
+    },
+    hasContent(content) {
+      return content && content !== ""
+    }
+  }
+  ,
   template: `
     <section class="section">
       <div class="container">
@@ -64,21 +73,17 @@ export default {
             <td>{{ message.subject }}</td>
 
             <td>
-            <span class="icon">
-              <span class="has-text-success">
-                <i class="fas fa-lg fa-file-code"></i>
-              </span>
-            </span>
-              <span class="icon">
-                <span class="has-text-success">
-                  <i class="fas fa-lg fa-file-alt"></i>
-                </span>
-            </span>
-              <span class="icon" @click="deleteFunc(message.event_id)">
-              <span class="has-text-danger">
-                <i class="fas fa-lg fa-trash"></i>
-              </span>
-            </span>
+              <a class="button" @click="open(message.event_id, 'html')" v-show="hasContent(message.content.html)">
+                <span class="icon"><span class="has-text-success"><i class="fas fa-lg fa-file-code"></i></span></span>
+              </a>
+
+              <a class="button" @click="open(message.event_id, 'text')" v-show="hasContent(message.content.text)">
+                <span class="icon"><span class="has-text-success"><i class="fas fa-lg fa-file-alt"></i></span></span>
+              </a>
+
+              <a class="button" @click="deleteFunc(message.event_id)">
+                <span class="icon"><span class="has-text-danger"><i class="fas fa-lg fa-trash"></i></span></span>
+              </a>
             </td>
           </tr>
           </tbody>
