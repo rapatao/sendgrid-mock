@@ -48,7 +48,7 @@ export default {
         <div class="column is-two-fifths">
           <div class="field is-horizontal">
             <div class="field-label is-normal">
-              <label for="subject" class="label">From</label>
+              <label for="subject" class="label">Subject</label>
             </div>
             <div class="field-body">
               <div class="field">
