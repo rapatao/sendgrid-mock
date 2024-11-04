@@ -41,17 +41,17 @@ func (s *Service) triggerDeliveryEvent(ctx context.Context, message model.Messag
 	event["sg_event_id"] = message.EventID
 	event["sg_message_id"] = message.MessageID
 	event["smtp-id"] = message.EventID + "." + message.MessageID + "@mock"
-	event["category"] = categories
+	event["category"] = message.Categories
 
 	s.sendEvent(ctx, event)
 }
 
-func (s *Service) sendEvent(ctx context.Context, event map[string]any) {
+func (s *Service) sendEvent(ctx context.Context, events ...map[string]any) {
 	if !s.config.Event {
 		return
 	}
 
-	body, err := json.Marshal([]map[string]any{event})
+	body, err := json.Marshal(events)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to marshal events")
 
