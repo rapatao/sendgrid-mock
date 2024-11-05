@@ -34,7 +34,8 @@ There is a basic support for events, currently sending (when enabled) one of the
 
 * **delivered**: when the message was persisted in the database;
 * **dropped**: when some failure occurs when persisting in the database;
-* **open**: when email content is retrieved through the `GET /messages/:event_id` endpoint;
+* **open**: when mail content is retrieved through the `GET /messages/:event_id` endpoint;
+* **click**: when a link is clicked in the rendered content;
 
 ## Configuration
 

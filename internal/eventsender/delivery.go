@@ -27,7 +27,6 @@ func (s *Service) TriggerDeliveryEvent(ctx context.Context, message *model.Messa
 
 	event["event"] = eventName
 	event["response"] = "250 OK - mock service: " + eventReason
-	event["smtp-id"] = message.EventID + "." + message.MessageID + "@mock"
 
 	s.sendEvent(ctx, event)
 }

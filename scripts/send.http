@@ -63,7 +63,7 @@ Content-Type: application/json
   "content": [
     {
       "type": "text/html",
-      "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+      "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p><br><a href=\"http://localhost:3000/health\">link</a>"
     }
   ],
   "attachments": [
