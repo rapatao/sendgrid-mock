@@ -10,10 +10,6 @@ import (
 	"sendgrid-mock/internal/model"
 )
 
-const (
-	db = "datastore.sqlite"
-)
-
 var (
 	//go:embed sql/schema.sql
 	schema string
@@ -27,7 +23,7 @@ type Service struct {
 	conn   *sql.DB
 }
 
-func (s *Service) Save(ctx context.Context, message model.Message) error {
+func (s *Service) Save(ctx context.Context, message *model.Message) error {
 	customArgs, err := json.Marshal(message.CustomArgs)
 	if err != nil {
 		return err

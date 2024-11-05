@@ -40,7 +40,7 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 
 	for _, personalization := range message.Personalizations {
 		for _, email := range personalization.To {
-			message := model.Message{
+			message := &model.Message{
 				EventID:    ulid.Make().String(),
 				MessageID:  messageID,
 				ReceivedAt: time.Now(),

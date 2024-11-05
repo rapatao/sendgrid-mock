@@ -125,7 +125,10 @@ func (s *Service) handleGet(context *gin.Context) {
 		return
 	}
 
-	// TODO trigger open event
+	userAgent := context.GetHeader("User-Agent")
+	ip := context.ClientIP()
+
+	s.event.TriggerOpen(context.Request.Context(), message, userAgent, ip)
 
 	context.Header("Content-Type", mime)
 	context.String(http.StatusOK, *content)
