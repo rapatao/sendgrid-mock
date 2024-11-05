@@ -1,4 +1,4 @@
-package sendgrid
+package eventsender
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func (s *Service) triggerDeliveryEvent(ctx context.Context, message model.Message, err error) {
+func (s *Service) TriggerDeliveryEvent(ctx context.Context, message model.Message, err error) {
 	if !s.config.Event {
 		return
 	}
@@ -81,29 +81,4 @@ func (s *Service) sendEvent(ctx context.Context, events ...map[string]any) {
 	defer result.Body.Close()
 
 	log.Info().Int("status_code", result.StatusCode).Msg("webhook response")
-}
-
-func categories(values ...[]string) []string {
-	var categories []string
-	for _, value := range values {
-		categories = append(categories, value...)
-	}
-
-	return categories
-}
-
-func customArgs(values ...map[string]string) map[string]string {
-	args := map[string]string{}
-
-	for _, value := range values {
-		if value == nil {
-			continue
-		}
-
-		for k, v := range value {
-			args[k] = v
-		}
-	}
-
-	return args
 }

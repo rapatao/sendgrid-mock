@@ -57,12 +57,12 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 					Html: html,
 					Text: text,
 				},
-				CustomArgs: customArgs(message.CustomArgs, personalization.CustomArgs),
-				Categories: categories(message.Categories, personalization.Categories),
+				CustomArgs: model.MergeCustomArgs(message.CustomArgs, personalization.CustomArgs),
+				Categories: model.MergeCategories(message.Categories, personalization.Categories),
 			}
 
 			err = s.repo.Save(ctx, message)
-			s.triggerDeliveryEvent(ctx, message, err)
+			s.event.TriggerDeliveryEvent(ctx, message, err)
 		}
 	}
 

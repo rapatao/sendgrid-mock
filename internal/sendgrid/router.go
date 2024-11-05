@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"sendgrid-mock/internal/config"
+	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
 	"sendgrid-mock/internal/web/restrouters"
 )
@@ -22,6 +23,7 @@ var (
 type Service struct {
 	config  *config.Config
 	repo    *repository.Service
+	event   *eventsender.Service
 	cleaner chan bool
 }
 
