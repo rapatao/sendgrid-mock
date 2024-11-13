@@ -2,11 +2,9 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	_ "embed"
 	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
-	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/model"
 )
 
@@ -17,11 +15,6 @@ var (
 	//go:embed sql/insert.sql
 	insertSQL string
 )
-
-type Service struct {
-	config config.Config
-	conn   *sql.DB
-}
 
 func (s *Service) Save(ctx context.Context, message *model.Message) error {
 	customArgs, err := json.Marshal(message.CustomArgs)

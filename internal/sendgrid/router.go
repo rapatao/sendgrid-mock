@@ -21,10 +21,9 @@ var (
 )
 
 type Service struct {
-	config  *config.Config
-	repo    *repository.Service
-	event   *eventsender.Service
-	cleaner chan bool
+	config *config.Config
+	repo   *repository.Service
+	event  *eventsender.Service
 }
 
 func (s *Service) Routes() []restrouters.Route {

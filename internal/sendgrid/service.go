@@ -66,7 +66,5 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 		}
 	}
 
-	s.triggerCleaner()
-
 	return messageID, err
 }

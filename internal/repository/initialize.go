@@ -28,6 +28,8 @@ func (s *Service) Initialize(container *injector.Container) error {
 		return err
 	}
 
+	go s.startCleaner()
+
 	return nil
 }
 

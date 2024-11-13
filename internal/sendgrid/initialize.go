@@ -35,9 +35,6 @@ func (s *Service) Initialize(container *injector.Container) error {
 
 	s.event = &event
 
-	s.cleaner = make(chan bool, 1)
-	go s.startCleaner()
-
 	return nil
 }
 
