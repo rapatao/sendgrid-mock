@@ -37,6 +37,10 @@ func (s *Service) handleClick(context *gin.Context) {
 		return
 	}
 
+	if encodedLink[0] == '/' {
+		encodedLink = encodedLink[1:]
+	}
+
 	link, err := decode(encodedLink)
 	if err != nil {
 		context.AbortWithStatus(http.StatusBadRequest)
