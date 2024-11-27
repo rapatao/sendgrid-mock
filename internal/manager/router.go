@@ -24,7 +24,7 @@ func (s *Service) Routes() []restrouters.Route {
 		},
 		{
 			Method:  http.MethodGet,
-			Path:    "/messages/:event_id/:link",
+			Path:    "/messages/:event_id/*link",
 			Handler: s.handleClick,
 		},
 		{
