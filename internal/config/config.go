@@ -19,6 +19,7 @@ type Config struct {
 	History        time.Duration
 	WebStaticFiles string
 	StorageFile    string
+	BlockDeleteAll bool
 }
 
 func (c *Config) Initialize(_ *injector.Container) error {
@@ -27,6 +28,7 @@ func (c *Config) Initialize(_ *injector.Container) error {
 	c.history()
 	c.webStaticFiles()
 	c.storageDir()
+	c.blockDeleteAll()
 
 	return nil
 }
@@ -101,6 +103,17 @@ func (c *Config) storageDir() {
 	log.Info().Msgf("using %s to store messages", storage)
 
 	c.StorageFile = storage
+}
+
+func (c *Config) blockDeleteAll() {
+	env := os.Getenv("BLOCK_DELETE_ALL")
+	if env == "true" {
+		c.BlockDeleteAll = true
+	}
+
+	c.BlockDeleteAll = false
+
+	log.Info().Msgf("block deleting all messages is %t", c.BlockDeleteAll)
 }
 
 var _ injector.Injectable = (*Config)(nil)

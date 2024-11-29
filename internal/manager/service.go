@@ -2,14 +2,16 @@ package manager
 
 import (
 	"github.com/gin-gonic/gin"
+	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
 	"strconv"
 )
 
 type Service struct {
-	repo  *repository.Service
-	event *eventsender.Service
+	repo   *repository.Service
+	event  *eventsender.Service
+	config *config.Config
 }
 
 func strOrNil(context *gin.Context, param string) *string {

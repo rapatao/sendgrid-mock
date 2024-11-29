@@ -22,6 +22,12 @@ func (s *Service) handleDelete(context *gin.Context) {
 }
 
 func (s *Service) handleDeleteAll(context *gin.Context) {
+	if !s.config.BlockDeleteAll {
+		context.AbortWithStatus(http.StatusForbidden)
+
+		return
+	}
+
 	err := s.repo.DeleteAll(context.Request.Context())
 	if err != nil {
 		context.AbortWithStatus(http.StatusInternalServerError)

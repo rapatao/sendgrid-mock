@@ -45,6 +45,7 @@ There are some customization possibles, all of them are defined by using the sys
 * **EVENT_DELIVERY_URL**: when defined, it used for event sending;
 * **MAIL_HISTORY_DURATION**: duration, using Golang pattern, which is used to delete messages older than that duration;
 * **STORAGE_FILE**: when defined, instead of creating a randomized temporary file, the given file name will be used;
+* **BLOCK_DELETE_ALL**: when value is `true`, deleting all messages will not be allowed;
 
 ## Container (Docker)
 
