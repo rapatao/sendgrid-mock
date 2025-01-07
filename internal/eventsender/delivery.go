@@ -10,7 +10,7 @@ func (s *Service) TriggerDeliveryEvent(ctx context.Context, message *model.Messa
 		return
 	}
 
-	event := baseEvent(message, "delivery")
+	event := s.baseEvent(message)
 
 	var (
 		eventName   string
