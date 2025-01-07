@@ -10,7 +10,7 @@ func (s *Service) TriggerOpen(ctx context.Context, message *model.Message, userA
 		return
 	}
 
-	event := baseEvent(message)
+	event := baseEvent(message, "open")
 
 	event["event"] = "open"
 	event["useragent"] = userAgent

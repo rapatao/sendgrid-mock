@@ -10,7 +10,7 @@ func (s *Service) TriggerClick(ctx context.Context, message *model.Message, user
 		return
 	}
 
-	event := baseEvent(message)
+	event := baseEvent(message, "click")
 
 	event["event"] = "click"
 	event["useragent"] = userAgent
