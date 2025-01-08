@@ -13,7 +13,7 @@ func (s *Service) baseEvent(message *model.Message) map[string]any {
 	}
 
 	event["email"] = message.To.Address
-	event["timestamp"] = time.Now().Unix() + int64(s.config.MessageDelay)
+	event["timestamp"] = time.Now().Add(s.config.MessageDelay).Unix()
 	event["smtp-id"] = message.EventID + "." + message.MessageID + "@mock"
 	event["sg_event_id"] = message.EventID
 	event["sg_message_id"] = message.MessageID
