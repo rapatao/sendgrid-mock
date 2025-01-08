@@ -111,7 +111,7 @@ func (c *Config) storageDir() {
 func (c *Config) messageDelay() {
 	duration, err := time.ParseDuration(os.Getenv("EVENT_TIMESTAMP_DELAY"))
 	if err != nil {
-		log.Error().Err(err).Msgf("failed to parse MESSAGE_DELAY, using default 0")
+		log.Error().Err(err).Msgf("failed to parse EVENT_TIMESTAMP_DELAY, using default 0")
 
 		c.MessageDelay = 0
 
