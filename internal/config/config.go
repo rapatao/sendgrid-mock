@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/rapatao/go-injector"
-	"github.com/rs/zerolog/log"
 	"os"
 	"time"
+
+	"github.com/rapatao/go-injector"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -20,6 +21,7 @@ type Config struct {
 	WebStaticFiles string
 	StorageFile    string
 	BlockDeleteAll bool
+	MessageDelay   time.Duration
 }
 
 func (c *Config) Initialize(_ *injector.Container) error {
@@ -29,6 +31,7 @@ func (c *Config) Initialize(_ *injector.Container) error {
 	c.webStaticFiles()
 	c.storageDir()
 	c.blockDeleteAll()
+	c.messageDelay()
 
 	return nil
 }
@@ -103,6 +106,21 @@ func (c *Config) storageDir() {
 	log.Info().Msgf("using %s to store messages", storage)
 
 	c.StorageFile = storage
+}
+
+func (c *Config) messageDelay() {
+	duration, err := time.ParseDuration(os.Getenv("EVENT_TIMESTAMP_DELAY"))
+	if err != nil {
+		log.Error().Err(err).Msgf("failed to parse EVENT_TIMESTAMP_DELAY, using default 0")
+
+		c.MessageDelay = 0
+
+		return
+	}
+
+	c.MessageDelay = duration
+
+	return
 }
 
 func (c *Config) blockDeleteAll() {
