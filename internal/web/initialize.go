@@ -1,12 +1,13 @@
 package web
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/manager"
 	"sendgrid-mock/internal/sendgrid"
 	"sendgrid-mock/internal/web/restrouters"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rapatao/go-injector"
 )
 
 func (c *Controller) Initialize(container *injector.Container) error {

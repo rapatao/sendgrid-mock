@@ -1,10 +1,11 @@
 package restrouters
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/rapatao/go-injector"
 	"net/http"
 	"sendgrid-mock/internal/repository"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rapatao/go-injector"
 )
 
 type HealthRouter struct {

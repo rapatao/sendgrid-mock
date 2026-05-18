@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/web"
+
+	"github.com/rapatao/go-injector"
 )
 
 func main() {

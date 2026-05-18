@@ -1,17 +1,18 @@
 package web
 
 import (
+	"net/http"
+	"os"
+	"path"
+	"sendgrid-mock/internal/config"
+	"sendgrid-mock/internal/web/restrouters"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rapatao/go-injector"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"net/http"
-	"os"
-	"path"
-	"sendgrid-mock/internal/config"
-	"sendgrid-mock/internal/web/restrouters"
 )
 
 type Controller struct {

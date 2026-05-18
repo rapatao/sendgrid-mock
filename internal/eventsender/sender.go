@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func (s *Service) sendEvent(ctx context.Context, events ...map[string]any) {
@@ -32,7 +33,9 @@ func (s *Service) sendEvent(ctx context.Context, events ...map[string]any) {
 		return
 	}
 
-	defer request.Body.Close()
+	defer func() {
+		_ = request.Body.Close()
+	}()
 
 	result, err := http.DefaultClient.Do(request)
 	if err != nil {
@@ -40,7 +43,9 @@ func (s *Service) sendEvent(ctx context.Context, events ...map[string]any) {
 
 		return
 	}
-	defer result.Body.Close()
+	defer func() {
+		_ = result.Body.Close()
+	}()
 
 	log.Info().Int("status_code", result.StatusCode).Msg("webhook response")
 }

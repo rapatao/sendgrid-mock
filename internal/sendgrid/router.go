@@ -3,14 +3,15 @@ package sendgrid
 import (
 	_ "embed"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/xeipuuv/gojsonschema"
 	"io"
 	"net/http"
 	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
 	"sendgrid-mock/internal/web/restrouters"
+
+	"github.com/gin-gonic/gin"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 var (

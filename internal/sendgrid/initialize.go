@@ -1,10 +1,11 @@
 package sendgrid
 
 import (
-	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
+
+	"github.com/rapatao/go-injector"
 )
 
 func (s *Service) Initialize(container *injector.Container) error {

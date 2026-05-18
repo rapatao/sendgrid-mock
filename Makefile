@@ -10,6 +10,9 @@ run:
 build:
 	CGO_ENABLED=1 go build -mod vendor -a -o ./app ./cmd/...
 
+lint:
+	golangci-lint run
+
 docker-build:
 	docker build -t sendgrid-mock:develop .
 

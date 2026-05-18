@@ -1,11 +1,12 @@
 package manager
 
 import (
-	"github.com/gin-gonic/gin"
 	"sendgrid-mock/internal/config"
 	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Service struct {

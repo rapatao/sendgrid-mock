@@ -78,8 +78,6 @@ func (c *Config) history() {
 	log.Error().Err(err).Msgf("failed to parse MAIL_HISTORY_DURATION, using default %s", defaultDuration.String())
 
 	c.History = defaultDuration
-
-	return
 }
 
 func (c *Config) webStaticFiles() {
@@ -119,17 +117,15 @@ func (c *Config) messageDelay() {
 	}
 
 	c.MessageDelay = duration
-
-	return
 }
 
 func (c *Config) blockDeleteAll() {
 	env := os.Getenv("BLOCK_DELETE_ALL")
 	if env == "true" {
 		c.BlockDeleteAll = true
+	} else {
+		c.BlockDeleteAll = false
 	}
-
-	c.BlockDeleteAll = false
 
 	log.Info().Msgf("block deleting all messages is %t", c.BlockDeleteAll)
 }

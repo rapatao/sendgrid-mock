@@ -1,8 +1,9 @@
 package manager
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (s *Service) handleDelete(context *gin.Context) {
@@ -22,7 +23,7 @@ func (s *Service) handleDelete(context *gin.Context) {
 }
 
 func (s *Service) handleDeleteAll(context *gin.Context) {
-	if !s.config.BlockDeleteAll {
+	if s.config.BlockDeleteAll {
 		context.AbortWithStatus(http.StatusForbidden)
 
 		return

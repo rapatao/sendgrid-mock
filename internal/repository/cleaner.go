@@ -2,8 +2,9 @@ package repository
 
 import (
 	_ "embed"
-	"github.com/rs/zerolog/log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 var (

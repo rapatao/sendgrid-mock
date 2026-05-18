@@ -2,8 +2,9 @@ package repository
 
 import (
 	"database/sql"
-	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/config"
+
+	"github.com/rapatao/go-injector"
 )
 
 func (s *Service) Initialize(container *injector.Container) error {

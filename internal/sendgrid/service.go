@@ -6,10 +6,11 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
-	"github.com/oklog/ulid/v2"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"sendgrid-mock/internal/model"
 	"time"
+
+	"github.com/oklog/ulid/v2"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 func (s *Service) persist(ctx context.Context, body []byte) (string, error) {

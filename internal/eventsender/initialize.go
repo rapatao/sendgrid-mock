@@ -1,8 +1,9 @@
 package eventsender
 
 import (
-	"github.com/rapatao/go-injector"
 	"sendgrid-mock/internal/config"
+
+	"github.com/rapatao/go-injector"
 )
 
 type Service struct {
@@ -21,5 +22,3 @@ func (s *Service) Initialize(container *injector.Container) error {
 
 	return nil
 }
-
-var _ injector.Injectable = (*Service)(nil)

@@ -50,14 +50,15 @@ func (s *Service) countSearchMessages(ctx context.Context, to *string, subject *
 		return total, err
 	}
 
-	defer queryContext.Close()
+	defer func() {
+		_ = queryContext.Close()
+	}()
 
 	if queryContext.Next() {
 		err = queryContext.Scan(&total)
 		if err != nil {
 			return total, err
 		}
-
 	}
 
 	return total, nil
@@ -72,7 +73,9 @@ func (s *Service) searchMessages(
 		return messages, err
 	}
 
-	defer queryContext.Close()
+	defer func() {
+		_ = queryContext.Close()
+	}()
 
 	for queryContext.Next() {
 		var (
@@ -119,5 +122,5 @@ func (s *Service) searchMessages(
 		messages = append(messages, message)
 	}
 
-	return messages, err
+	return messages, nil
 }
