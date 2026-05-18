@@ -175,18 +175,12 @@ export default {
         <button class="modal-close is-large" aria-label="close" @click="closeAttachments"></button>
       </div>
 
-          <tr v-if="state.messages.length === 0">
-            <td colspan="5" class="has-text-centered py-6">
-              <span class="icon is-large has-text-grey-light"><i class="fas fa-3x fa-inbox"></i></span>
-              <p class="is-size-5 has-text-grey-light mt-4">No messages found</p>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+      <div v-if="state.messages.length === 0" class="py-6 has-text-centered">
+        <span class="icon is-large has-text-grey-light"><i class="fas fa-3x fa-inbox"></i></span>
+        <p class="is-size-5 has-text-grey-light mt-4">No messages found</p>
       </div>
 
       <div class="level mt-4">
-        <div class="level-left">
           <div class="level-item">
             <p class="is-size-7 has-text-grey">
               {{ messageCount(state) }}
