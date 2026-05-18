@@ -181,6 +181,7 @@ export default {
       </div>
 
       <div class="level mt-4">
+        <div class="level-left">
           <div class="level-item">
             <p class="is-size-7 has-text-grey">
               {{ messageCount(state) }}
