@@ -24,8 +24,6 @@ export default {
       if (this.hasNext(this.state)) {
         this.state.page += 1
         this.filterFunc()
-
-        this.scrollTop()
       }
     },
     open(id, format) {
@@ -33,70 +31,125 @@ export default {
         "format": format
       }))
     },
+    confirmDelete(id) {
+      if (confirm("Are you sure you want to delete this message?")) {
+        this.deleteFunc(id)
+      }
+    },
     hasContent(content) {
       return content && content !== ""
+    },
+    messageCount(state) {
+      let messagesStart = state.page * state.maxRows
+
+      let firstMessage = 1 + messagesStart
+      if (state.messages.length === 0) {
+        firstMessage = 0
+      }
+
+      let lastMessage = (state.page + 1) * state.maxRows
+      if (state.messages.length < state.maxRows) {
+        lastMessage = messagesStart + state.messages.length
+      }
+
+      return `${firstMessage} to ${lastMessage} of ${state.total} message(s).`
     }
   }
   ,
   template: `
-    <section class="section">
-      <div class="container">
-        <table class="table is-fullwidth is-hoverable">
+    <div class="box mt-2">
+      <h2 class="title is-5 mb-3">Message History</h2>
+      <div class="table-container">
+        <table class="table is-fullwidth is-hoverable is-striped table-history">
           <thead>
           <tr>
-            <th>Date</th>
-            <th>From</th>
-            <th>To</th>
+            <th style="width: 15%">Date</th>
+            <th style="width: 20%">From</th>
+            <th style="width: 20%">To</th>
             <th>Subject</th>
-            <th>Actions</th>
+            <th class="has-text-centered" style="width: 15%">Actions</th>
           </tr>
           </thead>
 
           <tbody>
-          <tr v-for="message in state.messages">
-            <td>
+          <tr v-for="message in state.messages" :key="message.event_id">
+            <td class="is-vcentered">
               {{ new Date(message.received_at).toLocaleString() }}
             </td>
 
-            <td>
-              <strong>{{ message.from.name }}</strong>
-              <br/>
-              <small>{{ message.from.address }}</small>
+            <td class="is-vcentered">
+              <p class="is-marginless"><strong>{{ message.from.name || 'No Name' }}</strong></p>
+              <p class="is-marginless is-size-7 has-text-grey">{{ message.from.address }}</p>
             </td>
 
-            <td>
-              <strong>{{ message.to.name }}</strong>
-              <br/>
-              <small>{{ message.to.address }}</small>
+            <td class="is-vcentered">
+              <p class="is-marginless"><strong>{{ message.to.name || 'No Name' }}</strong></p>
+              <p class="is-marginless is-size-7 has-text-grey">{{ message.to.address }}</p>
             </td>
 
-            <td>{{ message.subject }}</td>
+            <td class="is-vcentered">{{ message.subject }}</td>
 
-            <td>
-              <a class="button" @click="open(message.event_id, 'html')" v-show="hasContent(message.content.html)">
-                <span class="icon"><span class="has-text-success"><i class="fas fa-lg fa-file-code"></i></span></span>
-              </a>
+            <td class="is-vcentered has-text-centered">
+              <div class="buttons is-centered">
+                <button class="button is-small is-info is-light" 
+                        @click="open(message.event_id, 'html')" 
+                        v-show="hasContent(message.content.html)"
+                        title="View HTML version">
+                  <span class="icon"><i class="fas fa-code"></i></span>
+                </button>
 
-              <a class="button" @click="open(message.event_id, 'text')" v-show="hasContent(message.content.text)">
-                <span class="icon"><span class="has-text-success"><i class="fas fa-lg fa-file-alt"></i></span></span>
-              </a>
+                <button class="button is-small is-info is-light" 
+                        @click="open(message.event_id, 'text')" 
+                        v-show="hasContent(message.content.text)"
+                        title="View Text version">
+                  <span class="icon"><i class="fas fa-file-alt"></i></span>
+                </button>
 
-              <a class="button" @click="deleteFunc(message.event_id)">
-                <span class="icon"><span class="has-text-danger"><i class="fas fa-lg fa-trash"></i></span></span>
-              </a>
+                <button class="button is-small is-danger is-light" 
+                        @click="confirmDelete(message.event_id)"
+                        title="Delete message">
+                  <span class="icon"><i class="fas fa-trash"></i></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="state.messages.length === 0">
+            <td colspan="5" class="has-text-centered py-6">
+              <span class="icon is-large has-text-grey-light"><i class="fas fa-3x fa-inbox"></i></span>
+              <p class="is-size-5 has-text-grey-light mt-4">No messages found</p>
             </td>
           </tr>
           </tbody>
         </table>
-
-        <nav class="pagination" role="navigation" aria-label="pagination">
-          <a class="pagination-previous"
-             :class="{ 'is-disabled': !hasPrevious(state) }" @click="previous">Previous</a>
-          <a class="pagination-next"
-             :class="{ 'is-disabled': !hasNext(state) }"
-             @click="next">Next page</a>
-        </nav>
       </div>
-    </section>
+
+      <div class="level mt-4">
+        <div class="level-left">
+          <div class="level-item">
+            <p class="is-size-7 has-text-grey">
+              {{ messageCount(state) }}
+            </p>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <div class="field has-addons">
+              <p class="control">
+                <button class="button is-small" :disabled="!hasPrevious(state)" @click="previous">
+                  <span class="icon is-small"><i class="fas fa-chevron-left"></i></span>
+                  <span>Previous</span>
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-small" :disabled="!hasNext(state)" @click="next">
+                  <span>Next</span>
+                  <span class="icon is-small"><i class="fas fa-chevron-right"></i></span>
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `
 }

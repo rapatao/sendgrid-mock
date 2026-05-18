@@ -3,40 +3,76 @@ export default {
     state: Object,
     deleteAllFunc: Function,
   },
+  data() {
+    return {
+      showDanger: false,
+      currentTheme: localStorage.getItem('theme') || 'auto',
+    }
+  },
   methods: {
-    footer(state) {
-      let messagesStart = state.page * state.maxRows
-
-      let firstMessage = 1 + messagesStart
-      if (state.messages.length === 0) {
-        firstMessage = 0
+    setTheme(theme) {
+      this.currentTheme = theme
+      localStorage.setItem('theme', theme)
+      document.documentElement.setAttribute('data-theme', theme)
+    },
+    confirmDeleteAll() {
+      if (confirm("Are you sure you want to delete all messages? This action cannot be undone.")) {
+        this.deleteAllFunc()
+        this.showDanger = false
       }
-
-      let lastMessage = (state.page + 1) * state.maxRows
-      if (state.messages.length < state.maxRows) {
-        lastMessage = messagesStart + state.messages.length
-      }
-
-      return `${firstMessage} to ${lastMessage} of ${state.total} message(s).`
     },
   },
+  beforeMount() {
+    document.documentElement.setAttribute('data-theme', this.currentTheme)
+  },
   template: `
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>{{ footer(state) }}</p>
-      </div>
-      <div class="columns">
-        <div class="column has-text-left">
-          <a href="https://github.com/rapatao/sendgrid-mock" target="_blank">
-            <span class="icon"><span class="has-text-success"><i class="fab fa-lg fa-github"></i></span></span>
-          </a>
+    <footer class="footer is-fixed-bottom">
+      <div class="level is-mobile">
+        <div class="level-left">
+          <div class="level-item" v-if="showDanger">
+            <div class="field has-addons">
+              <p class="control">
+                <button class="button is-small" :class="{'is-link': currentTheme === 'auto'}" @click="setTheme('auto')" title="System Theme">
+                  <span class="icon is-small"><i class="fas fa-magic"></i></span>
+                  <span>Auto</span>
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-small" :class="{'is-link': currentTheme === 'light'}" @click="setTheme('light')" title="Light Mode">
+                  <span class="icon is-small"><i class="fas fa-sun"></i></span>
+                  <span>Light</span>
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-small" :class="{'is-link': currentTheme === 'dark'}" @click="setTheme('dark')" title="Dark Mode">
+                  <span class="icon is-small"><i class="fas fa-moon"></i></span>
+                  <span>Dark</span>
+                </button>
+              </p>
+            </div>
+          </div>
         </div>
+        
+        <div class="level-right">
+          <div class="level-item">
+            <div class="buttons">
+              <a href="https://github.com/rapatao/sendgrid-mock" target="_blank" class="button is-light is-small">
+                <span class="icon is-small"><i class="fab fa-github"></i></span>
+                <span>GitHub</span>
+              </a>
+              
+              <button class="button is-small is-white has-text-grey" @click="showDanger = !showDanger" title="Settings">
+                <span class="icon is-small"><i class="fas fa-cog"></i></span>
+              </button>
 
-        <div class="column has-text-right">
-          <a @click="deleteAllFunc">Delete all messages</a>
+              <button v-if="showDanger" class="button is-danger is-outlined is-small ml-2" @click="confirmDeleteAll">
+                <span class="icon is-small"><i class="fas fa-trash-alt"></i></span>
+                <span>Delete all</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
     </footer>
   `
 }

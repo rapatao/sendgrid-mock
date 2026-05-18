@@ -26,48 +26,48 @@ export default {
     },
   },
   template: `
-    <div class="container">
-
-      <div class="columns box">
-        <div class="column is-two-fifths">
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label for="to" class="label">To</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control">
-                  <input id="to" class="input is-normal" type="email" placeholder="example@example.com"
-                         v-model="params.to" v-on:keyup.enter="filter"/>
-                </p>
-              </div>
+    <div class="box py-4">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label for="to" class="label">To</label>
+            <div class="control has-icons-left">
+              <input id="to" class="input" type="email" placeholder="recipient@example.com"
+                     v-model="params.to" v-on:keyup.enter="filter"/>
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
             </div>
           </div>
         </div>
 
-        <div class="column is-two-fifths">
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label for="subject" class="label">Subject</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <p class="control">
-                  <input id="subject" class="input is-normal" type="text" placeholder="Subject"
-                         v-model="params.subject" v-on:keyup.enter="filter"/>
-                </p>
-              </div>
+        <div class="column">
+          <div class="field">
+            <label for="subject" class="label">Subject</label>
+            <div class="control has-icons-left">
+              <input id="subject" class="input" type="text" placeholder="Search subject..."
+                     v-model="params.subject" v-on:keyup.enter="filter"/>
+              <span class="icon is-small is-left">
+                <i class="fas fa-heading"></i>
+              </span>
             </div>
           </div>
         </div>
 
-        <div class="column is-one-fifth">
-          <div class="field is-grouped">
-            <div class="control">
-              <button class="button is-success" @click="filter">Filter</button>
-            </div>
-            <div class="control">
-              <button class="button is-info" @click="clear">Clear</button>
+        <div class="column is-narrow">
+          <div class="field">
+            <label class="label">&nbsp;</label>
+            <div class="control is-flex is-align-items-center" style="height: 2.5rem;">
+              <div class="buttons">
+                <button class="button is-link is-small" @click="filter">
+                  <span class="icon is-small"><i class="fas fa-search"></i></span>
+                  <span>Filter</span>
+                </button>
+                <button class="button is-light is-small" @click="clear">
+                  <span class="icon is-small"><i class="fas fa-redo"></i></span>
+                  <span>Clear</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

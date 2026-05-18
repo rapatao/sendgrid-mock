@@ -63,10 +63,17 @@ export default {
   },
   components: {Filter, History, Footer},
   template: `
-    <section class="section">
-      <Filter :state="state" :filter-func="filter"/>
-      <History :state="state" :filter-func="filter" :delete-func="deleteEvent"/>
-      <Footer :state="state" :delete-all-func="deleteAll"/>
-    </section>
+    <div>
+      <div class="fixed-top-container">
+        <div class="container">
+          <Filter :state="state" :filter-func="filter"/>
+        </div>
+      </div>
+      
+      <div class="container mt-0">
+        <History :state="state" :filter-func="filter" :delete-func="deleteEvent"/>
+        <Footer :state="state" :delete-all-func="deleteAll"/>
+      </div>
+    </div>
   `
 }

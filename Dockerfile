@@ -1,4 +1,4 @@
-FROM golang:1.23.2-alpine3.20 AS builder
+FROM golang:1.26-alpine3.23 AS builder
 
 COPY . /build/
 WORKDIR /build/
@@ -8,7 +8,7 @@ RUN go mod tidy && \
     apk add --update --no-cache build-base && \
     make deps build
 
-FROM alpine:3.20
+FROM alpine:3.23
 
 COPY --from=builder /build/app /opt/sendgrid-mock
 COPY --from=builder /build/web /opt/web
