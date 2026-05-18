@@ -79,13 +79,13 @@ export default {
             </td>
 
             <td class="is-vcentered">
-              <p class="is-marginless"><strong>{{ message.from.name || 'No Name' }}</strong></p>
-              <p class="is-marginless is-size-7 has-text-grey">{{ message.from.address }}</p>
+              <p class="is-marginless" v-if="message.from.name"><strong>{{ message.from.name }}</strong> &lt;{{ message.from.address }}&gt;</p>
+              <p class="is-marginless" v-else><strong>{{ message.from.address }}</strong></p>
             </td>
 
             <td class="is-vcentered">
-              <p class="is-marginless"><strong>{{ message.to.name || 'No Name' }}</strong></p>
-              <p class="is-marginless is-size-7 has-text-grey">{{ message.to.address }}</p>
+              <p class="is-marginless" v-if="message.to.name"><strong>{{ message.to.name }}</strong> &lt;{{ message.to.address }}&gt;</p>
+              <p class="is-marginless" v-else><strong>{{ message.to.address }}</strong></p>
             </td>
 
             <td class="is-vcentered">{{ message.subject }}</td>

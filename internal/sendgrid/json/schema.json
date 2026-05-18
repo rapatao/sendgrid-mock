@@ -42,8 +42,7 @@
           "type": "string"
         },
         "name": {
-          "type": "string",
-          "nullable": true
+          "type": ["string", "null"]
         }
       }
     },
@@ -64,8 +63,7 @@
             }
           },
           "custom_args": {
-            "type": "object",
-            "nullable": true
+            "type": ["object", "null"]
           }
         }
       }
@@ -74,8 +72,7 @@
       "type": "string"
     },
     "template_id": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "categories": {
       "type": "array",
@@ -85,8 +82,7 @@
       "nullable": true
     },
     "custom_args": {
-      "type": "object",
-      "nullable": true
+      "type": ["object", "null"]
     }
   }
 }

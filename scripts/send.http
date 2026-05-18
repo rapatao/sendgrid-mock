@@ -49,6 +49,17 @@ Content-Type: application/json
           "name": "Lee"
         }
       ]
+    },
+    {
+      "from": {
+        "email": "sales@example.com",
+        "name": "Example Sales Team"
+      },
+      "to": [
+        {
+          "email": "empty.name@example.com"
+        }
+      ]
     }
   ],
   "from": {
