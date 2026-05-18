@@ -9,12 +9,14 @@ class SearchState {
   page = 0
   messages = []
   maxRows = 20
+  loading = false
 }
 
 export default {
   data() {
     return {
       state: new SearchState(),
+      isFilterVisible: true,
     }
   },
   methods: {
@@ -26,6 +28,7 @@ export default {
       })
     },
     filter() {
+      this.state.loading = true
       fetch(
         "/messages?" + new URLSearchParams(
           {
@@ -44,6 +47,9 @@ export default {
           this.scrollTop()
         })
         .catch(err => console.error(err))
+        .finally(() => {
+          this.state.loading = false
+        })
     },
     deleteEvent(id) {
       fetch("/messages/" + id, {
@@ -58,18 +64,35 @@ export default {
         .catch(err => console.error(err))
     }
   },
+  mounted() {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        this.isFilterVisible = entry.isIntersecting
+      },
+      { threshold: 0 }
+    )
+    if (this.$refs.filterContainer) {
+      observer.observe(this.$refs.filterContainer)
+    }
+  },
   beforeMount() {
     this.filter()
   },
   components: {Filter, History, Footer},
   template: `
     <div>
-      <div class="fixed-top-container">
+      <div ref="filterContainer" class="filter-wrapper">
         <div class="container">
           <Filter :state="state" :filter-func="filter"/>
         </div>
       </div>
       
+      <button v-show="!isFilterVisible" class="button is-link is-rounded fab-filters" @click="scrollTop" title="Go to filters">
+        <span class="icon">
+          <i class="fas fa-search"></i>
+        </span>
+      </button>
+
       <div class="container mt-0">
         <History :state="state" :filter-func="filter" :delete-func="deleteEvent"/>
         <Footer :state="state" :delete-all-func="deleteAll"/>

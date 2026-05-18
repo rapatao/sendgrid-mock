@@ -26,37 +26,39 @@
       min-height: 100vh;
       transition: background-color 0.3s ease;
       padding-bottom: 4rem; /* Space for the fixed footer */
-      padding-top: 6.5rem; /* Reduced space as navbar is gone */
+      padding-top: 1rem; /* Minimal padding since header is now scrollable */
     }
 
     .table-history {
       font-size: 0.9rem;
     }
 
-    .fixed-top-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 40;
+    .filter-wrapper {
       background-color: var(--bg-color);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
     }
 
-    .fixed-top-container .box {
+    .filter-wrapper .box {
       border-radius: 0;
       margin-bottom: 0 !important;
       border-left: none;
       border-right: none;
       border-top: none;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    [data-theme='dark'] .fixed-top-container {
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    [data-theme='dark'] .filter-wrapper .box {
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    [data-theme='dark'] .fixed-top-container .box {
-      border-top: 1px solid rgba(255,255,255,0.05);
+    .fab-filters {
+      position: fixed;
+      bottom: 5rem;
+      right: 1.5rem;
+      z-index: 45;
+      width: 3.5rem;
+      height: 3.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .footer.is-fixed-bottom {

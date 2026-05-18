@@ -58,6 +58,7 @@ export default {
   ,
   template: `
     <div class="box mt-2">
+      <progress v-if="state.loading" class="progress is-small is-link mb-2" max="100">Loading</progress>
       <h2 class="title is-5 mb-3">Message History</h2>
       <div class="table-container">
         <table class="table is-fullwidth is-hoverable is-striped table-history">
