@@ -24,8 +24,13 @@ func (s *Service) Routes() []restrouters.Route {
 		},
 		{
 			Method:  http.MethodGet,
-			Path:    "/messages/:event_id/*link",
+			Path:    "/messages/:event_id/links/*link",
 			Handler: s.handleClick,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/messages/:event_id/attachments/:filename",
+			Handler: s.handleDownloadAttachment,
 		},
 		{
 			Method:  http.MethodGet,

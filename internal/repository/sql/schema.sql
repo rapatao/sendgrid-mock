@@ -11,7 +11,8 @@ create table if not exists emails
   body_html    text,
   body_txt     text,
   custom_args  json,
-  categories   json
+  categories   json,
+  attachments  json
 );
 
 create index if not exists ix_received_at on emails (received_at);

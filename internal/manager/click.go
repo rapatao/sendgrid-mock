@@ -3,10 +3,11 @@ package manager
 import (
 	"bytes"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/net/html"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/net/html"
 )
 
 func (s *Service) handleClick(context *gin.Context) {
@@ -83,7 +84,7 @@ func replaceLink(eventID string, n *html.Node) {
 	if n.Type == html.ElementNode && n.Data == "a" {
 		for ix, attribute := range n.Attr {
 			if attribute.Key == "href" {
-				n.Attr[ix].Val = fmt.Sprintf("/messages/%s/%s", eventID, encode(attribute.Val))
+				n.Attr[ix].Val = fmt.Sprintf("/messages/%s/links/%s", eventID, encode(attribute.Val))
 			}
 		}
 	}

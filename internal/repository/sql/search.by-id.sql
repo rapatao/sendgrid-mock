@@ -9,7 +9,8 @@ select e.event_id,
        e.body_html,
        e.body_txt,
        e.custom_args,
-       e.categories
+       e.categories,
+       e.attachments
 from emails e
 where e.event_id = ?
 limit 1

@@ -9,5 +9,6 @@ insert into emails(event_id,
                    body_html,
                    body_txt,
                    custom_args,
-                   categories)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   categories,
+                   attachments)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)

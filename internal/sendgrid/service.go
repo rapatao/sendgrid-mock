@@ -23,8 +23,9 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 	messageID := ulid.Make().String()
 
 	var (
-		html *string
-		text *string
+		html        *string
+		text        *string
+		attachments []model.Attachment
 	)
 
 	for _, content := range message.Content {
@@ -36,6 +37,18 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 		default:
 			return "", errors.New("unsupported content type")
 		}
+	}
+
+	for _, att := range message.Attachments {
+		if att == nil {
+			continue
+		}
+		attachments = append(attachments, model.Attachment{
+			Content:     att.Content,
+			Filename:    att.Filename,
+			Type:        att.Type,
+			Disposition: att.Disposition,
+		})
 	}
 
 	for _, personalization := range message.Personalizations {
@@ -60,8 +73,9 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 					Html: html,
 					Text: text,
 				},
-				CustomArgs: model.MergeCustomArgs(message.CustomArgs, personalization.CustomArgs),
-				Categories: model.MergeCategories(message.Categories, personalization.Categories),
+				CustomArgs:  model.MergeCustomArgs(message.CustomArgs, personalization.CustomArgs),
+				Categories:  model.MergeCategories(message.Categories, personalization.Categories),
+				Attachments: attachments,
 			}
 
 			err = s.repo.Save(ctx, msg)

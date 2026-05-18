@@ -76,9 +76,10 @@ func (s *Service) searchMessages(
 
 	for queryContext.Next() {
 		var (
-			message    model.Message
-			customArgs string
-			categories string
+			message     model.Message
+			customArgs  string
+			categories  string
+			attachments string
 		)
 
 		err := queryContext.Scan(
@@ -94,6 +95,7 @@ func (s *Service) searchMessages(
 			&message.Content.Text,
 			&customArgs,
 			&categories,
+			&attachments,
 		)
 		if err != nil {
 			return messages, err
@@ -105,6 +107,11 @@ func (s *Service) searchMessages(
 		}
 
 		err = json.Unmarshal([]byte(categories), &message.Categories)
+		if err != nil {
+			return messages, err
+		}
+
+		err = json.Unmarshal([]byte(attachments), &message.Attachments)
 		if err != nil {
 			return messages, err
 		}

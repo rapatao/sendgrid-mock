@@ -4,8 +4,9 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
-	_ "github.com/mattn/go-sqlite3"
 	"sendgrid-mock/internal/model"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
@@ -27,6 +28,11 @@ func (s *Service) Save(ctx context.Context, message *model.Message) error {
 		return err
 	}
 
+	attachments, err := json.Marshal(message.Attachments)
+	if err != nil {
+		return err
+	}
+
 	_, err = s.conn.ExecContext(ctx, insertSQL,
 		message.EventID,
 		message.MessageID,
@@ -40,6 +46,7 @@ func (s *Service) Save(ctx context.Context, message *model.Message) error {
 		message.Content.Text,
 		customArgs,
 		categories,
+		attachments,
 	)
 
 	return err

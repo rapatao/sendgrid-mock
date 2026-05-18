@@ -4,6 +4,11 @@ export default {
     filterFunc: Function,
     deleteFunc: Function,
   },
+  data() {
+    return {
+      activeAttachments: null,
+    }
+  },
   methods: {
     hasPrevious(state) {
       return state.page > 0
@@ -31,6 +36,18 @@ export default {
         "format": format
       }))
     },
+    showAttachments(attachments, eventId) {
+      this.activeAttachments = attachments.map(a => ({...a, eventId: eventId}))
+    },
+    closeAttachments() {
+      this.activeAttachments = null
+    },
+    download(att) {
+      this.downloadAttachment(att.eventId, att.filename)
+    },
+    downloadAttachment(id, filename) {
+      window.location.href = `/messages/${id}/attachments/${filename}`;
+    },
     confirmDelete(id) {
       if (confirm("Are you sure you want to delete this message?")) {
         this.deleteFunc(id)
@@ -38,6 +55,9 @@ export default {
     },
     hasContent(content) {
       return content && content !== ""
+    },
+    hasAttachments(attachments) {
+      return attachments && attachments.length > 0
     },
     messageCount(state) {
       let messagesStart = state.page * state.maxRows
@@ -106,6 +126,14 @@ export default {
                   <span class="icon"><i class="fas fa-file-alt"></i></span>
                 </button>
 
+                <button v-if="hasAttachments(message.attachments)" 
+                        class="button is-small is-link is-light"
+                        @click="showAttachments(message.attachments, message.event_id)"
+                        title="View Attachments">
+                  <span class="icon is-small"><i class="fas fa-paperclip"></i></span>
+                  <span>{{ message.attachments.length }}</span>
+                </button>
+
                 <button class="button is-small is-danger is-light" 
                         @click="confirmDelete(message.event_id)"
                         title="Delete message">
@@ -114,6 +142,39 @@ export default {
               </div>
             </td>
           </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Attachment Modal -->
+      <div class="modal" :class="{'is-active': activeAttachments}">
+        <div class="modal-background" @click="closeAttachments"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h3 class="title is-4">Attachments</h3>
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Type</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="att in activeAttachments" :key="att.filename">
+                  <td>{{ att.filename }}</td>
+                  <td>{{ att.type }}</td>
+                  <td>
+                    <button class="button is-small is-primary" @click="download(att)">Download</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="closeAttachments"></button>
+      </div>
+
           <tr v-if="state.messages.length === 0">
             <td colspan="5" class="has-text-centered py-6">
               <span class="icon is-large has-text-grey-light"><i class="fas fa-3x fa-inbox"></i></span>

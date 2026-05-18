@@ -22,9 +22,10 @@ func (s *Service) Get(ctx context.Context, eventID string) (*model.Message, erro
 	}
 
 	var (
-		message    model.Message
-		customArgs string
-		categories string
+		message     model.Message
+		customArgs  string
+		categories  string
+		attachments string
 	)
 
 	err := row.Scan(
@@ -40,6 +41,7 @@ func (s *Service) Get(ctx context.Context, eventID string) (*model.Message, erro
 		&message.Content.Text,
 		&customArgs,
 		&categories,
+		&attachments,
 	)
 
 	if err != nil {
@@ -56,6 +58,11 @@ func (s *Service) Get(ctx context.Context, eventID string) (*model.Message, erro
 	}
 
 	err = json.Unmarshal([]byte(categories), &message.Categories)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal([]byte(attachments), &message.Attachments)
 	if err != nil {
 		return nil, err
 	}
