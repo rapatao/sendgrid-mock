@@ -39,8 +39,11 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 	}
 
 	for _, personalization := range message.Personalizations {
-		for _, email := range personalization.To {
-			message := &model.Message{
+		recipients := append(personalization.To, personalization.CC...)
+		recipients = append(recipients, personalization.BCC...)
+
+		for _, email := range recipients {
+			msg := &model.Message{
 				EventID:    ulid.Make().String(),
 				MessageID:  messageID,
 				ReceivedAt: time.Now(),
@@ -61,8 +64,8 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 				Categories: model.MergeCategories(message.Categories, personalization.Categories),
 			}
 
-			err = s.repo.Save(ctx, message)
-			s.event.TriggerDeliveryEvent(ctx, message, err)
+			err = s.repo.Save(ctx, msg)
+			s.event.TriggerDeliveryEvent(ctx, msg, err)
 		}
 	}
 
