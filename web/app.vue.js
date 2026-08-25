@@ -39,7 +39,13 @@ export default {
           }
         )
       )
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("search failed with status " + response.status)
+          }
+
+          return response.json()
+        })
         .then(json => {
           this.state.messages = json.messages
           this.state.total = json.total

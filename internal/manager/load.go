@@ -1,7 +1,9 @@
 package manager
 
 import (
+	"fmt"
 	"net/http"
+	"sendgrid-mock/internal/web/restrouters"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,27 +11,31 @@ import (
 func (s *Service) handleGet(context *gin.Context) {
 	eventID := context.Param("event_id")
 	if eventID == "" {
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"event_id", "missing event id", "use /messages/{event_id}?format=html|text")
 
 		return
 	}
 
 	format := strOrNil(context, "format")
 	if format == nil {
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"format", "missing format query parameter", "supported values: html, text")
 
 		return
 	}
 
 	message, err := s.repo.Get(context.Request.Context(), eventID)
 	if err != nil {
-		context.AbortWithStatus(http.StatusInternalServerError)
+		restrouters.AbortWithError(context, http.StatusInternalServerError,
+			"event_id", "unable to load message", err.Error())
 
 		return
 	}
 
 	if message == nil {
-		context.AbortWithStatus(http.StatusNotFound)
+		restrouters.AbortWithError(context, http.StatusNotFound,
+			"event_id", "message not found", fmt.Sprintf("no message stored with event id %q", eventID))
 
 		return
 	}
@@ -38,6 +44,7 @@ func (s *Service) handleGet(context *gin.Context) {
 		content *string
 		mime    string
 	)
+
 	switch *format {
 	case "html":
 		content = htmlWrapper(message.EventID, message.Content.Html)
@@ -46,13 +53,16 @@ func (s *Service) handleGet(context *gin.Context) {
 		content = message.Content.Text
 		mime = "text/plain"
 	default:
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"format", fmt.Sprintf("unsupported format %q", *format), "supported values: html, text")
 
 		return
 	}
 
 	if content == nil {
-		context.AbortWithStatus(http.StatusNotFound)
+		restrouters.AbortWithError(context, http.StatusNotFound,
+			"format", fmt.Sprintf("message has no %s content", *format),
+			fmt.Sprintf("message %s was sent without a %s part", eventID, mime))
 
 		return
 	}

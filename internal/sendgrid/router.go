@@ -9,6 +9,7 @@ import (
 	"sendgrid-mock/internal/eventsender"
 	"sendgrid-mock/internal/repository"
 	"sendgrid-mock/internal/web/restrouters"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xeipuuv/gojsonschema"
@@ -40,58 +41,32 @@ func (s *Service) Routes() []restrouters.Route {
 func (s *Service) HandleSend(context *gin.Context) {
 	token := context.GetHeader("Authorization")
 	if "Bearer "+s.config.ApiKey != token {
-		context.JSON(http.StatusUnauthorized,
-			gin.H{
-				"errors": []gin.H{
-					{
-						"message": "failed authentication",
-						"field":   "authorization",
-						"help":    "check used api-key for authentication",
-					},
-				},
-			})
+		restrouters.AbortWithError(context, http.StatusUnauthorized,
+			"authorization", "failed authentication", "check used api-key for authentication")
 
 		return
 	}
 
 	bytes, err := io.ReadAll(context.Request.Body)
 	if err != nil {
-		context.JSON(http.StatusBadRequest,
-			gin.H{"errors": []gin.H{
-				{
-					"field":   "body",
-					"message": "unable to parse body",
-					"help":    err.Error(),
-				},
-			}},
-		)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"body", "unable to read body", err.Error())
+
+		return
 	}
 
 	err = validate(bytes)
 	if err != nil {
-		context.JSON(http.StatusBadRequest,
-			gin.H{"errors": []gin.H{
-				{
-					"field":   "body",
-					"message": "invalid request body",
-					"help":    err.Error(),
-				},
-			}},
-		)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"body", "invalid request body", err.Error())
 
 		return
 	}
 
 	id, err := s.persist(context.Request.Context(), bytes)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError,
-			gin.H{"errors": []gin.H{
-				{
-					"message": "internal failure persisting message",
-					"help":    err.Error(),
-				},
-			}},
-		)
+		restrouters.AbortWithError(context, http.StatusInternalServerError,
+			"", "internal failure persisting message", err.Error())
 
 		return
 	}
@@ -110,7 +85,12 @@ func validate(body []byte) error {
 	}
 
 	if !result.Valid() {
-		return errors.New("invalid JSON")
+		reasons := make([]string, 0, len(result.Errors()))
+		for _, desc := range result.Errors() {
+			reasons = append(reasons, desc.String())
+		}
+
+		return errors.New(strings.Join(reasons, "; "))
 	}
 
 	return nil
