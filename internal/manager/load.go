@@ -12,7 +12,7 @@ func (s *Service) handleGet(context *gin.Context) {
 	eventID := context.Param("event_id")
 	if eventID == "" {
 		restrouters.AbortWithError(context, http.StatusBadRequest,
-			"event_id", "missing event id", "use /messages/{event_id}?format=html|text")
+			"event_id", "missing event id", "use /messages/{event_id}?format=html|text|raw")
 
 		return
 	}
@@ -20,7 +20,7 @@ func (s *Service) handleGet(context *gin.Context) {
 	format := strOrNil(context, "format")
 	if format == nil {
 		restrouters.AbortWithError(context, http.StatusBadRequest,
-			"format", "missing format query parameter", "supported values: html, text")
+			"format", "missing format query parameter", "supported values: html, text, raw")
 
 		return
 	}
@@ -52,9 +52,12 @@ func (s *Service) handleGet(context *gin.Context) {
 	case "text":
 		content = message.Content.Text
 		mime = "text/plain"
+	case "raw":
+		content = message.Content.Html
+		mime = "text/plain"
 	default:
 		restrouters.AbortWithError(context, http.StatusBadRequest,
-			"format", fmt.Sprintf("unsupported format %q", *format), "supported values: html, text")
+			"format", fmt.Sprintf("unsupported format %q", *format), "supported values: html, text, raw")
 
 		return
 	}
