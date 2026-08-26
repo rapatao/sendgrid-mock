@@ -5,7 +5,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"sendgrid-mock/internal/model"
 	"time"
 
@@ -18,7 +18,7 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 
 	err := json.NewDecoder(bytes.NewReader(body)).Decode(&message)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("decoding mail payload: %w", err)
 	}
 
 	messageID := ulid.Make().String()
@@ -36,7 +36,7 @@ func (s *Service) persist(ctx context.Context, body []byte) (string, error) {
 		case "text/plain":
 			text = &content.Value
 		default:
-			return "", errors.New("unsupported content type")
+			return "", fmt.Errorf("unsupported content type %q, expected text/html or text/plain", content.Type)
 		}
 	}
 

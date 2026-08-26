@@ -2,6 +2,7 @@ package manager
 
 import (
 	"net/http"
+	"sendgrid-mock/internal/web/restrouters"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +15,8 @@ func (s *Service) handleSearch(context *gin.Context) {
 
 	search, err := s.repo.Search(context.Request.Context(), to, from, page, rows)
 	if err != nil {
-		context.AbortWithStatus(http.StatusInternalServerError)
+		restrouters.AbortWithError(context, http.StatusInternalServerError,
+			"", "unable to search messages", err.Error())
 
 		return
 	}

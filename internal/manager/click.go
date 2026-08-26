@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"sendgrid-mock/internal/web/restrouters"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -13,38 +14,50 @@ import (
 func (s *Service) handleClick(context *gin.Context) {
 	eventID := context.Param("event_id")
 	if eventID == "" {
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"event_id", "missing event id", "use /messages/{event_id}/links/{encoded_link}")
 
 		return
 	}
 
 	message, err := s.repo.Get(context.Request.Context(), eventID)
 	if err != nil {
-		context.AbortWithStatus(http.StatusInternalServerError)
+		restrouters.AbortWithError(context, http.StatusInternalServerError,
+			"event_id", "unable to load message", err.Error())
 
 		return
 	}
 
 	if message == nil {
-		context.AbortWithStatus(http.StatusNotFound)
+		restrouters.AbortWithError(context, http.StatusNotFound,
+			"event_id", "message not found", fmt.Sprintf("no message stored with event id %q", eventID))
 
 		return
 	}
 
 	encodedLink := context.Param("link")
+	encodedLink = strings.TrimPrefix(encodedLink, "/")
+
 	if encodedLink == "" {
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"link", "missing link", "the link segment must be a base64 encoded URL")
 
 		return
 	}
 
-	if encodedLink[0] == '/' {
-		encodedLink = encodedLink[1:]
-	}
-
 	link, err := decode(encodedLink)
 	if err != nil {
-		context.AbortWithStatus(http.StatusBadRequest)
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"link", "link is not valid base64", err.Error())
+
+		return
+	}
+
+	if link == "" {
+		restrouters.AbortWithError(context, http.StatusBadRequest,
+			"link", "link decodes to an empty URL", "redirecting to an empty URL would loop back to this endpoint")
+
+		return
 	}
 
 	s.event.TriggerClick(context.Request.Context(),
@@ -80,10 +93,17 @@ func htmlWrapper(eventID string, content *string) *string {
 	return &result
 }
 
+func isSelfLink(href string) bool {
+	href = strings.TrimSpace(href)
+
+	return href == "" || strings.HasPrefix(href, "#")
+}
+
 func replaceLink(eventID string, n *html.Node) {
 	if n.Type == html.ElementNode && n.Data == "a" {
 		for ix, attribute := range n.Attr {
-			if attribute.Key == "href" {
+			// self-referencing hrefs would redirect back to the tracking URL itself
+			if attribute.Key == "href" && !isSelfLink(attribute.Val) {
 				n.Attr[ix].Val = fmt.Sprintf("/messages/%s/links/%s", eventID, encode(attribute.Val))
 			}
 		}
