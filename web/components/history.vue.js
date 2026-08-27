@@ -119,11 +119,18 @@ export default {
                   <span class="icon"><i class="fas fa-code"></i></span>
                 </button>
 
-                <button class="button is-small is-info is-light" 
-                        @click="open(message.event_id, 'text')" 
+                <button class="button is-small is-info is-light"
+                        @click="open(message.event_id, 'text')"
                         v-show="hasContent(message.content.text)"
                         title="View Text version">
                   <span class="icon"><i class="fas fa-file-alt"></i></span>
+                </button>
+
+                <button class="button is-small is-info is-light"
+                        @click="open(message.event_id, 'raw')"
+                        v-show="hasContent(message.content.html)"
+                        title="View Raw HTML">
+                  <span class="icon"><i class="fas fa-file-code"></i></span>
                 </button>
 
                 <button v-if="hasAttachments(message.attachments)" 
